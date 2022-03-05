@@ -1,4 +1,5 @@
 package primitives;
+import java.util.Objects;
 
 public class Ray
 {
@@ -20,27 +21,18 @@ public class Ray
         vector.normalize();
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
     // ***************** Administration  ******************** //
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Ray other = (Ray) obj;
-        if (p0 == null) {
-            if (other.p0 != null)
-                return false;
-        } else if (!p0.equals(other.p0))
-            return false;
-        if (p0 == null) {
-            if (other.p0 != null)
-                return false;
-        } else if (!p0.equals(other.p0))
-            return false;
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ray ray = (Ray) o;
+        return Objects.equals(p0, ray.p0) && Objects.equals(vector, ray.vector);
     }
 
     @Override

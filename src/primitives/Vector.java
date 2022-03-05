@@ -34,23 +34,33 @@ public class Vector extends Point
         return new Vector(helpX,helpY,helpZ);
     }
 
-    public Vector crossProduct(Vector v)
+    /**
+     *cross product between two vectors (vectorial product)969
+     * @param v3
+     * @return the vector result from the cross product( Right-hand rule)
+     * @link: https://www.mathsisfun.com/algebra/vectors-cross-product.html
+     */
+    public  Vector crossProduct(Vector v3)
     {
-        double coord1 = this.xyz.d2 *v.xyz.d3;
-        double coord2 = this.xyz.d3 * v.xyz.d2;
-        double finalX=coord1-coord2;
+        double ax = xyz.d1;
+        double ay = xyz.d2;
+        double az = xyz.d3;
+        double bx = v3.xyz.d1;
+        double by = v3.xyz.d2;
+        double bz = v3.xyz.d3;
 
-        coord1=this.xyz.d1 *v.xyz.d3;
-        coord2=this.xyz.d3 *v.xyz.d1;
-        double finalY=-1 * (coord1-coord2);
-
-        coord1=this.xyz.d1 *v.xyz.d2;
-        coord2=this.xyz.d2 *v.xyz.d1;
-        double finalZ=coord1-coord2;
-
-        return new Vector(finalX,finalY,finalZ);
+        double cx = ay * bz - az * by;
+        double  cy = az * bx - ax * bz;
+        double cz = ax * by - ay * bx;
+        return  new Vector(cx, cy, cz);
     }
 
+    /**
+     *dot product between two vectors (scalar product)
+     * @param vector
+     * @return
+     * "link https://www.mathsisfun.com/algebra/vectors-dot-product.html
+     */
     public double dotProduct(Vector vector)
     {
         double dotX= this.xyz.d1 * vector.xyz.d1;
@@ -61,19 +71,32 @@ public class Vector extends Point
 
     }
 
+    /**
+     *
+     * @return
+     */
+    public  double lengthSquared()
+    {
+        return xyz.d1 * xyz.d1 +
+                xyz.d2 * xyz.d2 +
+                xyz.d3 * xyz.d3;
+    }
+
     public double length()
     {
-        return super.distance(this);
+        return Math.sqrt(lengthSquared());
     }
 
-    public double lengthSquared()
-    {
-        return super.distanceSquared(this);
-    }
-
+        /**
+         *normalize the vector
+         * @return
+         */
     public Vector normalize()
     {
-        return new Vector(xyz.reduce(length()));
+        double len = length();
+        if(len == 0)
+            throw new ArithmeticException("Divide by zero!");
+        return new Vector(xyz.reduce((len)));
     }
 
     @Override

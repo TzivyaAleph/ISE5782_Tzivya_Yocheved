@@ -1,37 +1,40 @@
 package primitives;
+import java.util.Objects;
 
-public class Point
+public class Point<other>
 {
     protected final Double3 xyz;
 
+    /**
+     * secondary constructor for Point 3D
+     *
+     * @param x
+     * @param y
+     * @param z
+     */
     public Point(double x, double y, double z)
     {
         xyz=new Double3(x,y,z);
     }
 
+    /**
+     * primary constructor for point
+     * @param xyz Double3 value gor x, y, z axis
+     */
     protected Point(Double3 xyz)
     {
         this.xyz=xyz;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Vector other = (Vector) obj;
-        if (this.xyz == null) {
-            if (other.xyz != null)
-                return false;
-        } else if (!xyz.equals(other.xyz))
-            return false;
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return Objects.equals(xyz, point.xyz);
     }
 
-    @Override
+        @Override
     public String toString() {
         return "Point{" +
                 "xyz=" + xyz +
@@ -48,6 +51,11 @@ public class Point
         return new Vector(xyz.subtract(p1.xyz));
     }
 
+    /**
+     *
+     * @param p1
+     * @return d = ((x2 = x1) * (x2 = x1) + (y2 - y1) * (y2 - y1)  + (z2 = z1 ) * (z2 = z1 ))
+     */
     public double distanceSquared(Point p1)
     {
         double x=this.xyz.subtract(p1.xyz).d1 * this.xyz.subtract(p1.xyz).d1;
@@ -56,9 +64,14 @@ public class Point
         return x+y+z;
     }
 
-    public double distance(Point p)
+    /*
+     * @param other
+     * @return d=Sqrt(lengthSquare)
+     * @link https://www.engineeringtoolbox.com/distance-relationship-between-two-points-d_1854.html
+        */
+    public double distance(Point other)
     {
-        return Math.sqrt(this.distanceSquared(p));
+        return Math.sqrt(distanceSquared(other));
     }
 
 }
