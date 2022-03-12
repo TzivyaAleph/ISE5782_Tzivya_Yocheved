@@ -34,7 +34,7 @@ public class Plane implements Geometry
         this.p=x;
         Vector v1=z.subtract(x);
         Vector v2=y.subtract(x);
-        this.normal=v1.crossProduct(v2).normalize();
+        this.normal=v2.crossProduct(v1).normalize();
     }
 
     @Override
