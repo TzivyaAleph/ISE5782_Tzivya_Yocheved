@@ -5,6 +5,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 
 public class Tube implements Geometry
 {
@@ -43,6 +45,11 @@ public class Tube implements Geometry
         Point O = axisRay.getP0().add(axisRay.getDirection().scale(t));// O is the projection of point on axisRay
         Vector N=point.subtract(O);
         return N.normalize();
+    }
+
+    @Override
+    public List<Point> findIntersectionpoints(Ray ray) {
+        return null;
     }
 
 }

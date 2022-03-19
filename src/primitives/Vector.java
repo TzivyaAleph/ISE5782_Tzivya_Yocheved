@@ -1,37 +1,54 @@
 package primitives;
-import java.util.Objects;
 
-public class Vector extends Point
-{
-    /********** Constructors ***********/
-    public Vector(double x, double y, double z)
-    {
-        super(x,y,z);
-        if(xyz.equals(Double3.ZERO)) throw  new IllegalArgumentException("Cant vector zero");
+public class Vector extends Point {
+    public Vector(double x, double y, double z) {
+//        super(x,y,z);
+//        if(_xyz.equals(Double3.ZERO))
+//        {
+//            throw  new IllegalArgumentException("Vector(0,0,0) is not allowed");
+//        }
+        this(new Double3(x,y,z));
     }
 
-    protected Vector(Double3 xyz) {
+    /**
+     *
+     * @param xyz
+     */
+    public Vector(Double3 xyz){
         super(xyz);
-        if(xyz.equals(Double3.ZERO)) throw  new IllegalArgumentException("Cant vector zero");
+        if(_xyz.equals(Double3.ZERO))
+        {
+            throw  new IllegalArgumentException("Vector(0,0,0) is not allowed");
+        }
     }
 
-    /************** Operations ***************/
-    public Vector add(Vector v)
+    /**
+     *
+     * @return
+     */
+    public  double lengthSquared()
     {
-      return (Vector) super.add(v);
+        return _xyz._d1 * _xyz._d1 +
+                _xyz._d2 * _xyz._d2 +
+                _xyz._d3 * _xyz._d3;
     }
 
-    public Vector substract(Vector v)
+    public double length()
     {
-         return super.subtract(v);
+        return  Math.sqrt(lengthSquared());
     }
 
-    public Vector scale(double scalingFactor)
+    /**
+     *dot product between two vectors (scalar product)
+     * @param v3
+     * @return
+     * "link https://www.mathsisfun.com/algebra/vectors-dot-product.html
+     */
+    public double dotProduct(Vector v3)
     {
-        double helpX=scalingFactor*this.xyz.d1;
-        double helpY=scalingFactor*this.xyz.d2;
-        double helpZ=scalingFactor*this.xyz.d3;
-        return new Vector(helpX,helpY,helpZ);
+        return v3._xyz._d1 * _xyz._d1 +
+                v3._xyz._d2 * _xyz._d2 +
+                v3._xyz._d3 * _xyz._d3;
     }
 
     /**
@@ -42,12 +59,12 @@ public class Vector extends Point
      */
     public  Vector crossProduct(Vector v3)
     {
-        double ax = xyz.d1;
-        double ay = xyz.d2;
-        double az = xyz.d3;
-        double bx = v3.xyz.d1;
-        double by = v3.xyz.d2;
-        double bz = v3.xyz.d3;
+        double ax = _xyz._d1;
+        double ay = _xyz._d2;
+        double az = _xyz._d3;
+        double bx = v3._xyz._d1;
+        double by = v3._xyz._d2;
+        double bz = v3._xyz._d3;
 
         double cx = ay * bz - az * by;
         double  cy = az * bx - ax * bz;
@@ -56,60 +73,21 @@ public class Vector extends Point
     }
 
     /**
-     *dot product between two vectors (scalar product)
-     * @param vector
-     * @return
-     * "link https://www.mathsisfun.com/algebra/vectors-dot-product.html
-     */
-    public double dotProduct(Vector vector)
-    {
-        double dotX= this.xyz.d1 * vector.xyz.d1;
-        double dotY= this.xyz.d2 * vector.xyz.d2;
-        double dotZ= this.xyz.d3 * vector.xyz.d3;
-        return dotX+dotY+dotZ;
-
-
-    }
-
-    /**
      *
      * @return
      */
-    public  double lengthSquared()
-    {
-        return xyz.d1 * xyz.d1 +
-                xyz.d2 * xyz.d2 +
-                xyz.d3 * xyz.d3;
-    }
-
-    public double length()
-    {
-        return Math.sqrt(lengthSquared());
-    }
-
-        /**
-         *normalize the vector
-         * @return
-         */
-    public Vector normalize()
-    {
+    public Vector normalize() {
         double len = length();
         if(len == 0)
             throw new ArithmeticException("Divide by zero!");
-        return new Vector(xyz.reduce((len)));
+        return new Vector(_xyz.reduce((len)));
     }
 
-    @Override
-    public boolean equals(Object obj)
+    public Vector scale(double scalar)
     {
-        return super.equals(obj);
+        return new Vector(_xyz.scale(scalar));
     }
 
-    @Override
-    public String toString() {
-        return "Vector{" +
-                "xyz=" + xyz +
-                '}';
-    }
 
 }
+

@@ -2,7 +2,8 @@ package primitives;
 
 import java.util.Objects;
 
-public class Ray {
+public class Ray
+{
     final Point p0;
     final Vector dir;
 
