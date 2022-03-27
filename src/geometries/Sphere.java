@@ -10,7 +10,7 @@ import java.util.List;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
-public class Sphere implements Geometry{
+public class Sphere implements Geometry, Intersectable {
     final Point _center;
     final double _radius;
 

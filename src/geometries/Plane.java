@@ -10,7 +10,7 @@ import java.util.Objects;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
-public class Plane implements Geometry {
+public class Plane implements Geometry, Intersectable {
     final private Point _q0;
     final private Vector _normal;
 
