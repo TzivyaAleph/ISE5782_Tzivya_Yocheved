@@ -105,7 +105,7 @@ public class CameraIntegrationTest {
         assertCountIntersections(cam, new Plane(new Point(0, 0, -3), new Vector(0, -1, 1)), 6);
 
         // TC04: Beyond Plane 0 points
-        assertCountIntersections(cam, new Plane(new Point(0, 0, -5), new Vector(0, 1, 1)), 6);
+        assertCountIntersections(cam, new Plane(new Point(0, -5, 0), new Vector(-1, -9, 13)), 0);
     }
 
     /**
