@@ -23,13 +23,13 @@ public class CameraIntegrationTest {
      *
      * @author Chagit Orenstein, Avital Elchadad
      * @param cam      camera for the test
-     * @param geo      3D body to test the integration of the camer with
+     * @param geo      3D body to test the integration of the camera with
      * @param expected amount of intersections
      */
     private void assertCountIntersections(Camera cam, Intersectable geo, int expected) {
         int count = 0;
 
-        List<Point> allpoints = null;
+        List<Point> allPoints = null;
 
         cam.setVPSize(3, 3);
         cam.setVPDistance(1);
@@ -40,18 +40,18 @@ public class CameraIntegrationTest {
             for (int j = 0; j < nX; ++j) {
                 var intersections = geo.findIntersectionpoints(cam.constructRay(nX, nY, j, i));
                 if (intersections != null) {
-                    if (allpoints == null) {
-                        allpoints = new LinkedList<>();
+                    if (allPoints == null) {
+                        allPoints = new LinkedList<>();
                     }
-                    allpoints.addAll(intersections);
+                    allPoints.addAll(intersections);
                 }
                 count += intersections == null ? 0 : intersections.size();
             }
         }
 
         System.out.format("there is %d points:%n", count);
-        if (allpoints != null) {
-            for (var item : allpoints) {
+        if (allPoints != null) {
+            for (var item : allPoints) {
                 System.out.println(item);
             }
         }
