@@ -1,6 +1,7 @@
 package primitives;
 
 import java.util.Objects;
+import java.util.List;
 
 public class Ray
 {
@@ -39,6 +40,32 @@ public class Ray
     public Ray(Point p0, Vector dir) {
         this.p0 = p0;
         this.dir = dir.normalize();
+    }
+
+    public Point findClosestPoint(List <Point> points) {
+
+        double minDistance = Double.MAX_VALUE;
+        double d;
+        Point closePoint = null;
+
+        if(points==null){
+            return null;
+        }
+
+        for (Point p : points) {
+
+            d = p.distance(p0);
+            //check if the distance of p is smaller then minDistance
+            if (d < minDistance) {
+                minDistance = d;
+                closePoint = p;
+            }
+        }
+        return closePoint;
+    }
+
+    public Vector getDir() {
+        return dir;
     }
 }
 
