@@ -11,7 +11,8 @@ public final class Main {
     public Main() {
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         try {
             new Vector(0.0D, 0.0D, 0.0D);
             System.out.println("ERROR: zero vector does not throw an exception");
