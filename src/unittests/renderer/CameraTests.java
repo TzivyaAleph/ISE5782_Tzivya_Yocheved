@@ -6,10 +6,6 @@ import primitives.Ray;
 import primitives.Vector;
 import renderer.Camera;
 import static org.junit.jupiter.api.Assertions.*;
-
-
-
-
 /**
  * Testing Camera Class
  *

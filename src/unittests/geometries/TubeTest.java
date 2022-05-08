@@ -1,12 +1,11 @@
 package unittests.geometries;
 
 
+import geometries.*;
 import org.junit.jupiter.api.Test;
-import primitives.Double3;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
-import geometries.Tube;
 
 import static org.junit.jupiter.api.Assertions.*;
 

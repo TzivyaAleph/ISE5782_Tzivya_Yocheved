@@ -51,3 +51,4 @@ class RayTest {
         assertEquals(list.get(3), ray.findClosestPoint(list));
     }
 }
+

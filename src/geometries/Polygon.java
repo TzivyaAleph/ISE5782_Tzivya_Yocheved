@@ -9,9 +9,8 @@ import static primitives.Util.*;
  * Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
  * system
  *
- * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
     /**
      * List of polygon's vertices
      */
@@ -90,8 +89,6 @@ public class Polygon implements Geometry {
     }
 
     @Override
-    public List<Point> findIntersectionpoints(Ray ray) {
-        return null;
-    }
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) { return null; }
 }
 
