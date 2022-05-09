@@ -1,10 +1,7 @@
 package renderer;
 
 import lighting.LightSource;
-import primitives.Color;
-import primitives.Double3;
-import primitives.Ray;
-import primitives.Vector;
+import primitives.*;
 import scene.Scene;
 import geometries.Intersectable.GeoPoint;
 
@@ -19,7 +16,32 @@ public class RayTracerBasic extends  RayTracerBase{
      *
      * @param scene ,the scene
      */
-    public RayTracerBasic(Scene scene) {
+    /**
+     * a constant size for shadow rays
+     */
+    private static final double DELTA = 0.1;
+
+    /**
+     *
+     * @param gp, the point we want to color
+     * @param light, the light source
+     * @param l, the vector from light source to point
+     * @param n
+     * @param nv
+     * @return
+     */
+    private boolean unshaded(GeoPoint gp, LightSource light, Vector l, Vector n, double nv) {
+        Vector lightDirection = l.scale(-1);
+        Vector epsVector = n.scale(nv < 0 ? DELTA : -DELTA);
+        Point point = gp.point.add(epsVector);
+        Ray lightRay = new Ray(point, lightDirection);
+        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
+        if (intersections == null)
+            return true;
+
+        return false;
+    }
+        public RayTracerBasic(Scene scene) {
         super(scene);
         if (scene == null)
             return;
@@ -54,8 +76,6 @@ public class RayTracerBasic extends  RayTracerBase{
      * @return Color of the point
      */
     private Color calcColor(GeoPoint intersection, Ray ray) {
-        // Calculating the color at a point according to Phong Reflection Model
-
         return scene.ambientLight.getIntensity() //ka*Ia
                 .add(intersection.geometry.getEmission(), //+Ie
                         calcLocalEffects(intersection, ray)); //+calculated light contribution from all light sources
@@ -71,7 +91,6 @@ public class RayTracerBasic extends  RayTracerBase{
     private Color calcLocalEffects(GeoPoint intersection, Ray ray) {
         Vector v = ray.getDir();
         Vector n = intersection.geometry.getNormal(intersection.point);
-
         double nv = alignZero(n.dotProduct(v)); //nv=n*v
         if (nv == 0) {
             return Color.BLACK;
@@ -89,9 +108,12 @@ public class RayTracerBasic extends  RayTracerBase{
 
             //if sign(nl) == sign(nv) (if the light hits the point add it, otherwise don't add this light)
             if (nl * nv > 0) {
-                Color lightIntensity = lightSource.getIntensity(intersection.point);
-                color = color.add(calcDiffusive(kd, l, n, lightIntensity),
-                        calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+                if (unshaded(intersection, lightSource, l, n, nv))
+                {
+                    Color lightIntensity = lightSource.getIntensity(intersection.point);
+                    color = color.add(calcDiffusive(kd, l, n, lightIntensity),
+                            calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+                }
             }
         }
         return color;
