@@ -31,21 +31,34 @@ public class RayTracerBasic extends  RayTracerBase{
      * @return
      */
     private boolean unshaded(GeoPoint gp, LightSource light, Vector l, Vector n, double nv) {
-        Vector lightDirection = l.scale(-1);
+        Vector lightDirection = l.scale(-1);//from point to light source
         Vector epsVector = n.scale(nv < 0 ? DELTA : -DELTA);
         Point point = gp.point.add(epsVector);
         Ray lightRay = new Ray(point, lightDirection);
+        double maxDistance =light.getDistance(gp.point);
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
+
+        //if there are no intersections return true (there is no shadow)
         if (intersections == null)
             return true;
 
-        return false;
+        //for each intersection
+        for (GeoPoint intersection : intersections) {
+            //if there are points in the intersectios list that are closer to the point
+            //then light source, return false
+            if (maxDistance > intersection.point.distance(gp.point)) {
+                return false;
+            }
+        }
+        return true;
     }
+
         public RayTracerBasic(Scene scene) {
         super(scene);
         if (scene == null)
             return;
     }
+
     /**
      * returns the color of the closest point which the ray hits
      *
