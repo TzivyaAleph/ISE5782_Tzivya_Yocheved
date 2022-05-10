@@ -10,6 +10,14 @@ public class Material {
     public Double3 kS = Double3.ZERO;
     // Field represents the shininess of the material
     public int nShininess = 0;
+    /**
+     * for transparency
+     */
+    public Double3 kT=Double3.ZERO;
+    /**
+     * for reflection
+     */
+    public Double3 kR=Double3.ZERO;
 
     /**
      * Builder patterns setter for field kD
