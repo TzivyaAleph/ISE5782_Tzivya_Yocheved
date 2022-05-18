@@ -30,6 +30,26 @@ public class Material {
     }
 
     /**
+     * Builder patterns setter for field kt
+     * @param kt parameter for kt
+     * @return Material object
+     */
+    public Material setKT(Double3 kt) {
+        this.kT = kt;
+        return this;
+    }
+
+    /**
+     * Builder patterns setter for field kR
+     * @param kR parameter for kR
+     * @return Material object
+     */
+    public Material setkR(Double3 kR) {
+        this.kR = kR;
+        return this;
+    }
+
+    /**
      * Builder patterns setter for field kD
      * @param value parameter for kD constructor
      * @return Material object
