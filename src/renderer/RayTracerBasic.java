@@ -124,6 +124,7 @@ public class RayTracerBasic extends  RayTracerBase{
      * @param kx is kR or kT factor
      * @param kkx is kR or kT factor multiplied by k - factor of reflection and refraction
      * @return the color of the effect
+     * new change
      */
     private Color calcGlobalEffect(Ray ray, int level, Double3 kx, Double3 kkx) {
         GeoPoint gp = findClosestIntersection (ray);
