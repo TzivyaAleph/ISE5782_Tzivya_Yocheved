@@ -88,4 +88,37 @@ public class Material {
         this.nShininess = nShininess;
         return this;
     }
+
+
+    /**
+     * Builder patterns setter for field kT
+     * @param value parameter for kT constructor
+     * @return Material object
+     */
+    public Material setKT(double value) {
+        this.kT = new Double3(value);
+        return this;
+    }
+
+    /**
+     * Builder patterns setter for field kR
+     * @param kR parameter for kR
+     * @return Material object
+     */
+    public Material setKR(Double3 kR) {
+        this.kR = kR;
+        return this;
+    }
+
+    /**
+     * Builder patterns setter for field kR
+     * @param value parameter for kR constructor
+     * @return Material object
+     */
+    public Material setKR(double value) {
+        this.kR = new Double3(value);
+        return this;
+    }
+
+
 }

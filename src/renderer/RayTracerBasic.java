@@ -37,7 +37,7 @@ public class RayTracerBasic extends  RayTracerBase{
         Vector lightDirection = l.scale(-1); //vector from the point to the light source
         Vector deltaVector=n.scale(nv<0?DELTA:-DELTA);
         Point p=gp.point.add(deltaVector);
-        Ray lightRay = new Ray(gp.point, lightDirection, n);
+        Ray lightRay = new Ray(gp.point, lightDirection);
         double lightDistance = ls.getDistance(gp.point);
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay); //new Ray(lightDistance)
 
@@ -61,6 +61,7 @@ public class RayTracerBasic extends  RayTracerBase{
         if (scene == null)
             return;
     }
+    
 
     /**
      * find intersections between the ray and the 3D scene
@@ -146,7 +147,7 @@ public class RayTracerBasic extends  RayTracerBase{
             return null;
         }
         Vector r = inRay.subtract(n.scale(2 * vn));
-        return new Ray(pointGeo, r, n);
+        return new Ray(pointGeo, r);
     }
 
     /**
@@ -157,7 +158,7 @@ public class RayTracerBasic extends  RayTracerBase{
      * @return RefractedRay
      */
     private Ray constructRefractedRay(Point pointGeo, Vector inRay, Vector n) {
-        return new Ray(pointGeo, inRay, n);
+        return new Ray(pointGeo, inRay);
     }
 
     /**
