@@ -37,7 +37,7 @@ public class RayTracerBasic extends  RayTracerBase{
         Vector lightDirection = l.scale(-1); //vector from the point to the light source
         Vector deltaVector=n.scale(nv<0?DELTA:-DELTA);
         Point p=gp.point.add(deltaVector);
-        Ray lightRay = new Ray(gp.point, lightDirection);
+        Ray lightRay = new Ray(gp.point, lightDirection,n);
         double lightDistance = ls.getDistance(gp.point);
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay); //new Ray(lightDistance)
 
@@ -61,7 +61,7 @@ public class RayTracerBasic extends  RayTracerBase{
         if (scene == null)
             return;
     }
-    
+
 
     /**
      * find intersections between the ray and the 3D scene
@@ -147,7 +147,7 @@ public class RayTracerBasic extends  RayTracerBase{
             return null;
         }
         Vector r = inRay.subtract(n.scale(2 * vn));
-        return new Ray(pointGeo, r);
+        return new Ray(pointGeo, r,n);
     }
 
     /**
@@ -158,7 +158,7 @@ public class RayTracerBasic extends  RayTracerBase{
      * @return RefractedRay
      */
     private Ray constructRefractedRay(Point pointGeo, Vector inRay, Vector n) {
-        return new Ray(pointGeo, inRay);
+        return new Ray(pointGeo, inRay,n);
     }
 
     /**
@@ -247,10 +247,14 @@ public class RayTracerBasic extends  RayTracerBase{
      */
     private Double3 transparency(LightSource light, Vector l, Vector n, GeoPoint geoPoint, double nv)
     {
-        Vector lightDirection = l.scale(-1);//from point to light source
-        Vector epsVector = n.scale(nv < 0 ? DELTA : -DELTA);
-        Point point = geoPoint.point.add(epsVector);
-        Ray lightRay = new Ray(point, lightDirection);
+        Vector lightDirection = l.scale(-1); // from point to light source
+        Ray lightRay;
+
+        if(nv<0){
+            lightRay=new Ray(geoPoint.point,lightDirection, n);
+        }
+        else
+            lightRay=new Ray(geoPoint.point,lightDirection,n.scale(-1));
 
         double lightDistance = light.getDistance(geoPoint.point);
         double maxDistance = light.getDistance(geoPoint.point);
