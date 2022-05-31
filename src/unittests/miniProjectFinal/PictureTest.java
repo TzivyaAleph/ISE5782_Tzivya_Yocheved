@@ -45,6 +45,7 @@ public class PictureTest {
                 new Sphere(new Point(30, 35, 5), 20) //
                         .setEmission(new Color(lightGray)) //
                         .setMaterial(new Material().setKd(0.8).setKs(0.8).setShininess(50).setKT(0.0001)),
+                //the middle part of the snow man
                 new Sphere(new Point(30, -10, 5), 30) //
                         .setEmission(new Color(lightGray)) //
                         .setMaterial(new Material().setKd(0.8).setKs(0.8).setShininess(50).setKT(0.00001)),
@@ -53,7 +54,7 @@ public class PictureTest {
                         .setEmission(new Color(lightGray)) //
                         .setMaterial(new Material().setKd(0.8).setKs(0.8).setShininess(50).setKT(0.00001)),
 
-                new Sphere(new Point(-20, 35, 5), 10) //
+                /**new Sphere(new Point(-20, 35, 5), 10) //
                         .setEmission(new Color(BLUE)) //
                         .setMaterial(new Material().setKd(0.8).setKs(0.8).setShininess(50).setKT(0.00001)),
                 new Sphere(new Point(20, 35, 5), 10) //
@@ -65,34 +66,50 @@ public class PictureTest {
                 new Sphere(new Point(-10, 18, 60), 6) //
                         .setEmission(new Color(WHITE)) //
                         .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),
-                new Sphere(new Point(10, 18, 60), 6) //
+                new Sphere(new Point(28, -15, 74), 4) //
                         .setEmission(new Color(WHITE)) //
+                        .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),**/
+                //the snow mans' eyes
+                new Sphere(new Point(35, 36, 85), 4) //
+                        .setEmission(new Color(0,100,0)) //
                         .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),
-                new Sphere(new Point(-10, 16, 78), 4) //
+                new Sphere(new Point(21, 36, 85), 4) //
+                        .setEmission(new Color(0,100,0)) //
+                        .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),
+                //the snow mans nose
+                new Triangle(new Point(25.5, 30, 70), new Point(28.5, 20, 70), new Point(31.5, 30, 70))
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(60).setKT(0.3)).setEmission(new Color(255,69,0)),
+                //the snow mans buttons
+                new Sphere(new Point(28, -22, 78), 4) //
                         .setEmission(new Color(BLACK)) //
                         .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),
-                new Sphere(new Point(10, 16, 78), 4) //
+                new Sphere(new Point(28, -7, 78), 4) //
+                        .setEmission(new Color(BLACK)) //
+                        .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),
+                new Sphere(new Point(28, 8, 78), 4) //
                         .setEmission(new Color(BLACK)) //
                         .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),
 
-                new Sphere(new Point(6, -15, 60), 6) //
+                new Triangle(new Point(20, 52, 42), new Point(29, 80, 42), new Point(38, 52, 42)) //
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(50).setKT(0.25)).setEmission(new Color(RED)),
+
+
+
+                /**new Sphere(new Point(6, -15, 60), 6) //
                         .setEmission(new Color(RED)) //
-                        .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),
-                new Sphere(new Point(0, -15, 78), 4) //
-                        .setEmission(new Color(ORANGE)) //
                         .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),
                 new Sphere(new Point(-6, -15, 60), 6) //
                         .setEmission(new Color(RED)) //
-                        .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),
+                        .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(50).setKT(0.1)),**/
                 new Sphere(new Point(-90, 80, 60), 40) //
                         .setEmission(new Color(YELLOW)) //
-                        .setMaterial(new Material().setKd(0.8).setKs(0.8).setShininess(50).setKT(0.65)),
-                new Sphere(new Point(30, -25, 5), 10) //
+                        .setMaterial(new Material().setKd(0.8).setKs(0.8).setShininess(50).setKT(0.65))
+                /**new Sphere(new Point(30, -25, 5), 10) //
                         .setEmission(new Color(BLUE)) //
                         .setMaterial(new Material().setKd(0.8).setKs(0.8).setShininess(50).setKT(0.00001)),
                 new Sphere(new Point(-30, -25, 5), 10) //
                         .setEmission(new Color(BLUE)) //
-                        .setMaterial(new Material().setKd(0.8).setKs(0.8).setShininess(50).setKT(0.00001))
+                        .setMaterial(new Material().setKd(0.8).setKs(0.8).setShininess(50).setKT(0.00001))**/
         );
 
 
