@@ -5,10 +5,12 @@ import primitives.*;
 import scene.Scene;
 import geometries.Intersectable.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.*;
 import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
 
 public class RayTracerBasic extends  RayTracerBase{
     /**
@@ -20,9 +22,24 @@ public class RayTracerBasic extends  RayTracerBase{
      * a constant size for shadow rays
      */
     private static final double DELTA = 0.1;
+    /**
+     * The max level of the recursion attending to get <br/>
+     * reflection and transparency of the geometries that goes to other geometries
+     */
     private static final int MAX_CALC_COLOR_LEVEL = 10;
+    /**
+     * The minimal effect of a color factor for transparency and reflection <br/>
+     * Below that there are no longer any color differences
+     */
     private static final double MIN_CALC_COLOR_K = 0.001;
-    private static final double INITIAL_K = 1.0 ;
+    /**
+     * starting value of the effect of a color factor for transparency and reflection
+     */
+    private static final double INITIAL_K = 1d;
+
+    private int glossinessRaysNum = 36;
+    private double distanceGrid = 25;
+    private double sizeGrid=4;
 
 
     /**
@@ -108,12 +125,31 @@ public class RayTracerBasic extends  RayTracerBase{
         Vector n = gp.geometry.getNormal(gp.point);
         Material material = gp.geometry.getMaterial();
         Double3 kkr = material.kR.product(k);
-        if (!kkr.lowerThan(MIN_CALC_COLOR_K))
-            color = calcGlobalEffect(constructReflectedRay(gp.point, v, n), level, material.kR, kkr);
-        Double3 kkt = material.kT.product(k);
-        if (!kkt.lowerThan(MIN_CALC_COLOR_K))
-            color = color.add(
-                    calcGlobalEffect(constructRefractedRay(gp.point, v, n), level, material.kT, kkt));
+        if (!kkr.lowerThan(MIN_CALC_COLOR_K)){
+            List<Ray> reflectedRays = constructReflectedRays(gp, v, material.getKG());
+            primitives.Color tempColor1 = primitives.Color.BLACK;
+            // each ray
+            for(Ray reflectedRay: reflectedRays)
+            {
+                GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
+                tempColor1 = tempColor1.add(reflectedPoint == null ? primitives.Color.BLACK : calcColor(reflectedPoint, reflectedRay, level - 1, kkr).scale(material.kR));
+            }
+
+            color = color.add(tempColor1.reduce(reflectedRays.size()));
+        }
+        Double3 kkt = k.product(material.kT);
+        if (!kkt.lowerThan(MIN_CALC_COLOR_K)) {
+            List<Ray> refractedRays = constructRefractedRays(gp,v,n);
+            primitives.Color tempColor2 = primitives.Color.BLACK;
+            //calculate for each ray
+            for(Ray refractedRay: refractedRays)
+            {
+                GeoPoint refractedPoint = findClosestIntersection(refractedRay);
+                tempColor2 = tempColor2.add(refractedPoint == null? primitives.Color.BLACK : calcColor(refractedPoint, refractedRay, level -1, kkt).scale(material.kT));
+            }
+
+            color = color.add(tempColor2.reduce(refractedRays.size()));
+        }
         return color;
     }
 
@@ -133,32 +169,82 @@ public class RayTracerBasic extends  RayTracerBase{
         ).scale(kx);
     }
 
+
     /**
      * this func returns a new ray- the reflected ray comes from the point because of the light- inRay
-     * @param pointGeo is the point to calculate reflection with
-     * @param inRay is the normalized ray from the viewer
-     * @param n is the normal from the point
-     * @return ReflectedRay
+     * @param geoPoint is the point to calculate reflection with
+     * @param v is the normalized vector from the viewer
+     * @param Glossy
+     * @return a list of Reflected rays
      */
-    private Ray constructReflectedRay(Point pointGeo, Vector inRay, Vector n)
-    {
-        double vn = inRay.dotProduct(n);
-        if (Util.isZero(vn)) {
-            return null;
+    private List<Ray> constructReflectedRays(GeoPoint geoPoint, Vector v, double Glossy) {
+        Vector n = geoPoint.geometry.getNormal(geoPoint.point);
+        double nv = alignZero(v.dotProduct(n));
+        Vector r = v.subtract(n.scale(2d * nv)).normalize();
+        return raysGrid( new Ray(geoPoint.point,r,n), 1,geoPoint.geometry.getMaterial().getKG(), n);
+    }
+
+    /**
+     * this func returns a new ray- the reflected ray comes from the point because of the light- inRay
+     * @param geoPoint
+     * @param v
+     * @param n
+     * @return
+     */
+    private List<Ray> constructRefractedRays(GeoPoint geoPoint, Vector v, Vector n) {
+        return raysGrid(new Ray(v, n),-1,geoPoint.geometry.getMaterial().getKG(), n);
+    }
+
+    /**
+     * function that finds all rays that go through the grid
+     * @param ray
+     * @param glossy
+     * @param n
+     * @return a list of rays
+     */
+    List<Ray> raysGrid(Ray ray, int direction,double glossy, Vector n){
+        int numOfRowCol = isZero(glossy)? 1: (int) ceil(sqrt(glossinessRaysNum));
+        if (numOfRowCol == 1) return List.of(ray);
+        Vector Vup ;
+        double Ax= abs(ray.getDir().get_x()), Ay= abs(ray.getDir().get_y()), Az= abs(ray.getDir().get_z());
+        if (Ax < Ay)
+            Vup= Ax < Az ?  new Vector(0, -ray.getDir().get_z(), ray.getDir().get_y()) :
+                    new Vector(-ray.getDir().get_y(), ray.getDir().get_x(), 0);
+        else
+            Vup= Ay < Az ?  new Vector(ray.getDir().get_z(), 0, -ray.getDir().get_x()) :
+                    new Vector(-ray.getDir().get_y(), ray.getDir().get_x(), 0);
+        Vector Vright = Vup.crossProduct(ray.getDir()).normalize();
+        Point pc=ray.getPoint(distanceGrid);
+        double step = glossy/sizeGrid;
+        Point pij=pc.add(Vright.scale(numOfRowCol/2*-step)).add(Vup.scale(numOfRowCol/2*-step));
+        Vector tempRayVector;
+        Point Pij1;
+
+        List<Ray> rays = new ArrayList<>();
+        rays.add(ray);
+        for (int i = 1; i < numOfRowCol; i++) {
+            for (int j = 1; j < numOfRowCol; j++) {
+                Pij1=pij.add(Vright.scale(i*step)).add(Vup.scale(j*step));
+                tempRayVector =  Pij1.subtract(ray.getP0());
+                if(n.dotProduct(tempRayVector) < 0) //refraction
+                    rays.add(new Ray(ray.getP0(), tempRayVector));
+                n.dotProduct(tempRayVector);
+                if(false) //reflection
+                    rays.add(new Ray(ray.getP0(), tempRayVector));
+            }
         }
-        Vector r = inRay.subtract(n.scale(2 * vn));
-        return new Ray(pointGeo, r,n);
+
+        return rays;
     }
 
     /**
      * this func returns a new ray- the refracted ray comes from the point because of the light- inRay
-     * @param pointGeo is the point to calculate refraction with
+     * @param geoPoint is the point to calculate refraction with
      * @param inRay is the normalized ray from the viewer
-     * @param n is the vector - normal from the point
      * @return RefractedRay
      */
-    private Ray constructRefractedRay(Point pointGeo, Vector inRay, Vector n) {
-        return new Ray(pointGeo, inRay,n);
+    private Ray constructRefracted(GeoPoint geoPoint, Ray inRay) {
+        return new Ray(geoPoint.point, inRay.getDir(), geoPoint.geometry.getNormal(geoPoint.point));
     }
 
     /**
@@ -295,3 +381,20 @@ public class RayTracerBasic extends  RayTracerBase{
         return closestPoint;
     }
 }
+
+/**
+ * this func returns a new ray- the reflected ray comes from the point because of the light- inRay
+ * @param pointGeo is the point to calculate reflection with
+ * @param inRay is the normalized ray from the viewer
+ * @param n is the normal from the point
+ * @return ReflectedRay
+ */
+/**private Ray constructReflectedRay(Point pointGeo, Vector inRay, Vector n)
+ {
+ double vn = inRay.dotProduct(n);
+ if (Util.isZero(vn)) {
+ return null;
+ }
+ Vector r = inRay.subtract(n.scale(2 * vn));
+ return new Ray(pointGeo, r,n);
+ }*/

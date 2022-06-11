@@ -10,14 +10,12 @@ public class Material {
     public Double3 kS = Double3.ZERO;
     // Field represents the shininess of the material
     public int nShininess = 0;
-    /**
-     * for transparency
-     */
+    //for transparency
     public Double3 kT=Double3.ZERO;
-    /**
-     * for reflection
-     */
+    //for reflection
     public Double3 kR=Double3.ZERO;
+    //for glossiness
+    public double kG=0.0;
 
     /**
      * Builder patterns setter for field kD
@@ -118,6 +116,24 @@ public class Material {
     public Material setKR(double value) {
         this.kR = new Double3(value);
         return this;
+    }
+
+    /**
+     * Builder patterns setter for field kG
+     * @param kG parameter for kG
+     * @return Material object
+     */
+    public Material setKG(double kG) {
+        this.kG = kG;
+        return this;
+    }
+
+    /**
+     * Builder patterns getter for field kG
+     * @return Double3 object
+     */
+    public double getKG() {
+        return kG;
     }
 
 
