@@ -4,6 +4,8 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * Interface for light sources to implement
  */
@@ -22,4 +24,6 @@ public interface LightSource {
      */
     public Vector getL(Point p);
     public double getDistance(Point pnt);
+
+    public List<Vector> getBeamL(Point p,double redius , int amount);
 }

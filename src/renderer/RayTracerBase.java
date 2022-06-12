@@ -30,5 +30,7 @@ public abstract class RayTracerBase {
      * @return Color
      */
     public abstract Color traceRay(Ray ray);
+    protected double beamRadius=20d;
+    protected boolean softShadows=false;
 
 }

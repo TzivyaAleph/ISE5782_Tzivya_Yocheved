@@ -274,14 +274,20 @@ public class RayTracerBasic extends  RayTracerBase{
         Material material = intersection.geometry.getMaterial();
         Color color = intersection.geometry.
                 getEmission(); //base color
+        int beam=200;//for the number of beams
+        Double3 ktr;
         //for each light source in the scene
         for (LightSource lightSource : scene.lights)
         {
             Vector l = lightSource.getL(intersection.point); //the direction from the light source to the point
             double nl = alignZero(n.dotProduct(l)); //nl=n*l
             //if sign(nl) == sing(nv) (if the light hits the point add it, otherwise don't add this light)
-            if (nl * nv > 0) {
-                Double3 ktr=transparency(lightSource,l,n,intersection,nv);
+            if (nl * nv > 0)
+            {
+                if(softShadows)
+                    ktr=transparencyBeam(lightSource,n,intersection,beam);
+                else
+                    ktr =transparency(lightSource,l,n,intersection,nv);
                 if(!ktr.product(k).lowerThan(MIN_CALC_COLOR_K))
                 {
                     Color lightIntensity = lightSource.getIntensity(intersection.point).scale(ktr);
@@ -291,6 +297,18 @@ public class RayTracerBasic extends  RayTracerBase{
             }
         }
         return color;
+    }
+
+    private Double3 transparencyBeam(LightSource lightSource, Vector n, GeoPoint geoPoint,int beam) {
+        Double3 tempKtr = new Double3(0d);
+        List<Vector> beamL = lightSource.getBeamL(geoPoint.point, beamRadius,beam);
+
+        for (Vector vl : beamL) {
+            tempKtr = tempKtr.add(transparency(lightSource,vl,n,geoPoint,1));
+        }
+        tempKtr = tempKtr.reduce(beamL.size());
+
+        return tempKtr;
     }
 
     /**

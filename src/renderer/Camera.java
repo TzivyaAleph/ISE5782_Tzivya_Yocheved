@@ -5,6 +5,7 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
 import java.util.MissingResourceException;
 
 import static primitives.Util.isZero;
@@ -43,6 +44,7 @@ public class Camera {
     private ImageWriter imageWriter;
     // Field for ray tracer
     private RayTracerBase rayTracer;
+    private int numOfRays;
 
     /**
      * Returns the camera location.
@@ -104,6 +106,7 @@ public class Camera {
         this.imageWriter = ImageWriter;
         return this;
     }
+
 
     /**
      * Setter of builder patterns
@@ -274,5 +277,64 @@ public class Camera {
 
         imageWriter.writeToImage();
     }
+
+    public Camera setNumOfRays(int numOfRays)
+    {
+        if(numOfRays <= 0)
+            this.numOfRays=1;
+        else
+            this.numOfRays = numOfRays;
+        return this;
+    }
+
+
+    public Camera renderImage() throws MissingResourceException, IllegalArgumentException {
+        try {
+            if (imageWriter == null) {
+                throw new MissingResourceException("missing resource", ImageWriter.class.getName(), "");
+            }
+            if (rayTracer == null) {
+                throw new MissingResourceException("missing resource", RayTracerBase.class.getName(), "");
+            }
+            if (p0 == null){
+                throw new MissingResourceException("missing resource", Point.class.getName(), "");
+            }
+            if (vUp == null  ||vRight == null || vTo == null){
+                throw new MissingResourceException("missing resource", Vector.class.getName(), "");
+            }
+
+            //rendering the image
+            int nX = imageWriter.getNx();
+            int nY = imageWriter.getNy();
+            for (int i = 0; i < nY; i++) {
+                for (int j = 0; j < nX; j++) {
+                    if(numOfRays == 1 || numOfRays == 0)
+                    {
+                        primitives.Color rayColor = castRay(imageWriter.getNx(), imageWriter.getNy(), j, i);
+                        imageWriter.writePixel(j, i, rayColor);
+                    }
+                    else
+                    {
+                        List<Ray> rays = constructBeamThroughPixel(imageWriter.getNx(), imageWriter.getNy(), j, i,numOfRays);
+                        primitives.Color rayColor = rayTracer.traceRay(rays);
+                        imageWriter.writePixel(j, i, rayColor);
+                    }
+//                    imageWriter.writePixel(j, i, castRay(nX, nY, j, i));
+                }
+            }
+        } catch (MissingResourceException e) {
+            throw new UnsupportedOperationException("Not implemented yet" + e.getClassName());
+        }
+        return this;
+    }
+
+    private primitives.Color castRay(int nX, int nY, int j, int i) {
+        Ray ray = constructRay(nX, nY, j, i);
+        primitives.Color pixelColor = rayTracer.traceRay(ray);
+        return pixelColor;
+    }
+
+
+
 }
 
